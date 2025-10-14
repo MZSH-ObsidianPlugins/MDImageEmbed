@@ -11,7 +11,10 @@
       "Read(//d/GitHub/mengzhishanghun/MyObsidian/笔记/积累/Perforce/入门系列/**)",
       "Read(//d/GitHub/mengzhishanghun/MyObsidian/笔记/积累/Perforce/**)",
       "Read(//d/GitHub/mengzhishanghun/MyObsidian/**)",
-      "Bash(npm install)"
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(copy:*)",
+      "Bash(xcopy:*)"
     ],
     "deny": [],
     "ask": []

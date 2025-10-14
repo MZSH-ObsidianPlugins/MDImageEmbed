@@ -54,7 +54,7 @@ MDImageEmbed 是一个 Obsidian 插件，可以将 Markdown 文件中的本地�
 ```bash
 # 克隆仓库
 git clone https://github.com/mengzhishanghun/MZSH-Tools.git
-cd MZSH-Tools/MDImageEmbed/ObsidianPlugin
+cd MZSH-Tools/MDImageEmbed
 
 # 安装依赖
 npm install
@@ -91,14 +91,6 @@ cp manifest.json "<Vault>/.obsidian/plugins/md-image-embed/manifest.json"
 ## 📋 使用场景
 
 ### 场景 1: 发布博客文章
-
-```markdown
-<!-- 原文件：包含本地图片 -->
-![架构图](./images/architecture.png)
-
-<!-- 转换后：Base64 内嵌 -->
-![架构图](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...)
-```
 
 **优势**：无需上传图片到图床，一键发布
 
@@ -153,14 +145,14 @@ cp manifest.json "<Vault>/.obsidian/plugins/md-image-embed/manifest.json"
 
 ```
 MDImageEmbed/
-├── ObsidianPlugin/              # Obsidian 插件源码
-│   ├── main.ts                  # 插件主文件
-│   ├── manifest.json            # 插件配置
-│   ├── package.json             # 依赖管理
-│   ├── tsconfig.json            # TypeScript 配置
-│   ├── esbuild.config.mjs       # 构建配置
-│   ├── README.md                # 插件文档
-│   └── INSTALL.md               # 安装指南
+├── main.ts                      # 插件主文件（TypeScript 源码）
+├── main.js                      # 编译后的插件文件
+├── manifest.json                # 插件配置
+├── versions.json                # 版本兼容性管理
+├── styles.css                   # 插件样式
+├── package.json                 # 依赖管理
+├── tsconfig.json                # TypeScript 配置
+├── esbuild.config.mjs           # 构建配置
 ├── .gitignore                   # Git 忽略文件
 ├── LICENSE                      # MIT 许可证
 └── README.md                    # 项目说明（本文件）
