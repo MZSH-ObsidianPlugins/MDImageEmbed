@@ -42,8 +42,8 @@ MDImageEmbed 是一个 Obsidian 插件，可以将 Markdown 文件中的本地�
 
 ```bash
 # 克隆仓库
-git clone https://github.com/mengzhishanghun/MZSH-Tools.git
-cd MZSH-Tools/MDImageEmbed
+git clone https://github.com/MZSH-Tools/MDImageEmbed.git
+cd MDImageEmbed
 
 # 安装依赖
 npm install
@@ -98,8 +98,7 @@ cp manifest.json "<Vault>/.obsidian/plugins/md-image-embed/manifest.json"
 
 ## 📮 联系方式
 
-- GitHub: [@mengzhishanghun](https://github.com/mengzhishanghun)
-- Issues: [提交问题](https://github.com/mengzhishanghun/MZSH-Tools/issues)
+- 邮箱：mengzhishanghun@outlook.com
 
 ---
 

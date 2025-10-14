@@ -4,8 +4,7 @@ npm-debug.log*
 package-lock.json
 
 # ========== Build Output ==========
-ObsidianPlugin/main.js
-ObsidianPlugin/*.js.map
+*.js.map
 
 # ========== IDE ==========
 .vscode/
