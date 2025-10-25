@@ -5,7 +5,6 @@
 	"minAppVersion": "0.15.0",
 	"description": "Convert local images in Markdown to Base64 embedded format. Perfect for exporting notes, publishing blogs, and sharing documents.",
 	"author": "mengzhishanghun",
-	"authorUrl": "https://github.com/MZSH-Tools/MDImageEmbed",
-	"fundingUrl": "https://github.com/MZSH-Tools/MDImageEmbed",
+	"authorUrl": "https://github.com/mengzhishanghun",
 	"isDesktopOnly": false
 }
