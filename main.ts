@@ -13,13 +13,17 @@ interface MDImageEmbedSettings {
 	showDetailedLog: boolean;           // 是否显示详细日志（每个图片的状态）
 	convertWikiLinks: boolean;          // 是否转换 Wiki 链接
 	skipBase64Images: boolean;          // 是否跳过已有 Base64
+	prefixFilePath: string;             // 前缀文件路径（添加到文章开头）
+	suffixFilePath: string;             // 后缀文件路径（添加到文章结尾）
 }
 
 const DEFAULT_SETTINGS: MDImageEmbedSettings = {
 	showConversionLog: true,
 	showDetailedLog: false,
 	convertWikiLinks: true,
-	skipBase64Images: true
+	skipBase64Images: true,
+	prefixFilePath: '',
+	suffixFilePath: ''
 }
 
 // ========== 主插件类 ==========
@@ -71,10 +75,52 @@ export default class MDImageEmbedPlugin extends Plugin {
 		});
 	}
 
+	// ========== 辅助方法: 读取前缀/后缀文件内容 ==========
+	async readTemplateFile(filePath: string): Promise<string> {
+		if (!filePath || filePath.trim() === '') {
+			return '';
+		}
+
+		try {
+			// 尝试从 Vault 中读取文件
+			const file = this.app.vault.getAbstractFileByPath(filePath.trim());
+			if (file instanceof TFile) {
+				const content = await this.app.vault.read(file);
+				if (this.settings.showConversionLog) {
+					console.log(`[MDImageEmbed] 成功读取模板文件: ${filePath}`);
+				}
+				return content;
+			} else {
+				if (this.settings.showConversionLog) {
+					console.warn(`[MDImageEmbed] 模板文件未找到: ${filePath}`);
+				}
+				return '';
+			}
+		} catch (error) {
+			if (this.settings.showConversionLog) {
+				console.error(`[MDImageEmbed] 读取模板文件失败: ${filePath}`, error);
+			}
+			return '';
+		}
+	}
+
 	// ========== 功能 1: 复制到剪贴板 ==========
 	async copyAsBase64(file: TFile) {
 		try {
-			const content = await this.app.vault.read(file);
+			let content = await this.app.vault.read(file);
+
+			// 添加前缀内容
+			const prefix = await this.readTemplateFile(this.settings.prefixFilePath);
+			if (prefix) {
+				content = prefix + '\n\n' + content;
+			}
+
+			// 添加后缀内容
+			const suffix = await this.readTemplateFile(this.settings.suffixFilePath);
+			if (suffix) {
+				content = content + '\n\n' + suffix;
+			}
+
 			const result = await this.convertMarkdownToBase64(content, file);
 
 			// 复制到剪贴板
@@ -424,6 +470,33 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.skipBase64Images)
 				.onChange(async (value) => {
 					this.plugin.settings.skipBase64Images = value;
+					await this.plugin.saveSettings();
+				}));
+
+		// 分隔线
+		containerEl.createEl('h3', { text: 'Anti-reprint Protection' });
+
+		// 设置 4: 前缀文件路径
+		new Setting(containerEl)
+			.setName('Prefix file path')
+			.setDesc('Path to markdown file to prepend (e.g., "templates/prefix.md"). Leave empty to disable.')
+			.addText(text => text
+				.setPlaceholder('templates/prefix.md')
+				.setValue(this.plugin.settings.prefixFilePath)
+				.onChange(async (value) => {
+					this.plugin.settings.prefixFilePath = value.trim();
+					await this.plugin.saveSettings();
+				}));
+
+		// 设置 5: 后缀文件路径
+		new Setting(containerEl)
+			.setName('Suffix file path')
+			.setDesc('Path to markdown file to append (e.g., "templates/suffix.md"). Leave empty to disable.')
+			.addText(text => text
+				.setPlaceholder('templates/suffix.md')
+				.setValue(this.plugin.settings.suffixFilePath)
+				.onChange(async (value) => {
+					this.plugin.settings.suffixFilePath = value.trim();
 					await this.plugin.saveSettings();
 				}));
 	}
