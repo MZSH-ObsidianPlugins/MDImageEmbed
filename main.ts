@@ -11,7 +11,6 @@ import { Plugin, TFile, Notice, Menu, PluginSettingTab, App, Setting } from 'obs
 interface MDImageEmbedSettings {
 	showConversionLog: boolean;        // 是否显示转换日志
 	showDetailedLog: boolean;           // 是否显示详细日志（每个图片的状态）
-	fileSuffix: string;                 // 另存为文件的后缀
 	convertWikiLinks: boolean;          // 是否转换 Wiki 链接
 	skipBase64Images: boolean;          // 是否跳过已有 Base64
 }
@@ -19,7 +18,6 @@ interface MDImageEmbedSettings {
 const DEFAULT_SETTINGS: MDImageEmbedSettings = {
 	showConversionLog: true,
 	showDetailedLog: false,
-	fileSuffix: '_base64',
 	convertWikiLinks: true,
 	skipBase64Images: true
 }
@@ -62,23 +60,13 @@ export default class MDImageEmbedPlugin extends Plugin {
 
 	// ========== 右键菜单 ==========
 	addFileMenuItems(menu: Menu, file: TFile) {
-		// 菜单项 1: 复制为 Base64 格式到剪贴板
+		// 菜单项: 复制为 Base64 格式到剪贴板
 		menu.addItem((item) => {
 			item
 				.setTitle('Copy as Base64 format')
 				.setIcon('clipboard-copy')
 				.onClick(async () => {
 					await this.copyAsBase64(file);
-				});
-		});
-
-		// 菜单项 2: 另存为 Base64 格式
-		menu.addItem((item) => {
-			item
-				.setTitle('Save as Base64 format')
-				.setIcon('save')
-				.onClick(async () => {
-					await this.saveAsBase64(file);
 				});
 		});
 	}
@@ -104,42 +92,12 @@ export default class MDImageEmbedPlugin extends Plugin {
 		}
 	}
 
-	// ========== 功能 2: 另存为新文件 ==========
-	async saveAsBase64(file: TFile) {
-		try {
-			const content = await this.app.vault.read(file);
-			const result = await this.convertMarkdownToBase64(content, file);
-
-			// 生成新文件名
-			const baseName = file.basename;
-			const newFileName = `${baseName}${this.settings.fileSuffix}.md`;
-			const newFilePath = file.parent
-				? `${file.parent.path}/${newFileName}`
-				: newFileName;
-
-			// 创建新文件
-			await this.app.vault.create(newFilePath, result.content);
-
-			if (this.settings.showConversionLog) {
-				// 显示详细的处理结果
-				this.showDetailedResults(result, newFileName);
-			} else {
-				new Notice(`✅ Saved as ${newFileName}`);
-			}
-		} catch (error) {
-			new Notice('❌ Failed to save: ' + error.message);
-			console.error('Save failed:', error);
-		}
-	}
-
 	// ========== 显示详细处理结果 ==========
-	showDetailedResults(result: {content: string, convertedCount: number, skippedCount: number, details: Array<{path: string, status: string, reason?: string}>}, fileName?: string) {
+	showDetailedResults(result: {content: string, convertedCount: number, skippedCount: number, details: Array<{path: string, status: string, reason?: string}>}) {
 		const total = result.convertedCount + result.skippedCount;
 
 		// 主通知
-		let message = fileName
-			? `✅ Saved as ${fileName}\n\n`
-			: '✅ Copied to clipboard\n\n';
+		let message = '✅ Copied to clipboard\n\n';
 
 		message += `📊 Summary: ${total} images\n`;
 		message += `   • Converted: ${result.convertedCount}\n`;
@@ -447,19 +405,7 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 					}));
 		}
 
-		// 设置 2: 文件后缀
-		new Setting(containerEl)
-			.setName('File suffix')
-			.setDesc('Suffix for "Save as" files (e.g., "_base64" → filename_base64.md)')
-			.addText(text => text
-				.setPlaceholder('_base64')
-				.setValue(this.plugin.settings.fileSuffix)
-				.onChange(async (value) => {
-					this.plugin.settings.fileSuffix = value || '_base64';
-					await this.plugin.saveSettings();
-				}));
-
-		// 设置 3: 转换 Wiki 链接
+		// 设置 2: 转换 Wiki 链接
 		new Setting(containerEl)
 			.setName('Convert Wiki links')
 			.setDesc('Convert Obsidian Wiki links (![[image.png]]) to standard Markdown with Base64')
@@ -470,7 +416,7 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
-		// 设置 4: 跳过 Base64 图片
+		// 设置 3: 跳过 Base64 图片
 		new Setting(containerEl)
 			.setName('Skip Base64 images')
 			.setDesc('Skip images that are already in Base64 format')
