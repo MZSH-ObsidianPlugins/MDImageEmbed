@@ -1,105 +1,70 @@
-# MDImageEmbed
+# MD Image Embed
 
-> 将 Markdown 文件中的图片转换为 Base64 内嵌格式的 Obsidian 插件
+MDImageEmbed is an Obsidian plugin that converts local images in Markdown files to Base64 embedded format. Useful for exporting notes, publishing blogs, or sharing documents without external image dependencies.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Obsidian](https://img.shields.io/badge/Obsidian-Plugin-7c3aed)](https://obsidian.md)
 
-## 📖 简介
+## Features
 
-MDImageEmbed 是一个 Obsidian 插件，可以将 Markdown 文件中的本地图片转换为 Base64 内嵌格式。适用于导出笔记、发布博客、分享文档等场景，让你的 Markdown 文件真正做到"单文件包含所有内容"。
+- **One-click conversion**: Right-click → Copy as Base64 format to clipboard
+- **Smart path resolution**: Handles Obsidian's various image path formats
+- **Anti-reprint protection**: Optional prefix/suffix for copyright notices
+- **Format support**: PNG, JPG, JPEG, GIF, WebP, SVG, BMP
+- **Wiki link support**: Converts `![[image.png]]` to standard Markdown with Base64
 
-### 为什么需要这个插件？
+## Installation
 
-- 📝 **发布博客**：无需单独上传图片到图床，一个文件搞定
-- 📤 **分享笔记**：发送单个 Markdown 文件，接收者无需下载图片
-- 📱 **公众号/平台**：部分平台不支持外链图片，Base64 完美解决
-- 📦 **归档文档**：避免图片链接失效，永久保存完整内容
+### Manual Installation
 
-## ✨ 功能特性
+1. Download `main.js`, `manifest.json`, and `styles.css` from the latest release
+2. Create folder `<Vault>/.obsidian/plugins/md-image-embed/`
+3. Copy files to the folder
+4. Restart Obsidian and enable the plugin in Settings → Community Plugins
 
-- 📋 **复制为 Base64 格式**：右键文件 → 转换后自动复制到剪贴板
-- 💾 **另存为 Base64 格式**：右键文件 → 生成新文件（`原文件名_base64.md`）
-- 🎯 **智能路径解析**：自动处理 Obsidian 各种图片路径格式
-- 🔄 **自动跳过**：已转换的 Base64 图片
-- 🖼️ **支持格式**：PNG, JPG, JPEG, GIF, WebP, SVG, BMP
-- ⚙️ **自定义设置**：可配置文件后缀、转换规则、日志显示等
-
-## 📦 安装
-
-### 方法 1: 手动安装
-
-1. 下载最新版本的 `main.js` 和 `manifest.json`
-2. 在你的 Obsidian Vault 中创建插件目录：
-   ```
-   <Vault>/.obsidian/plugins/md-image-embed/
-   ```
-3. 将下载的文件放入该目录
-4. 重启 Obsidian
-5. 在 **设置 → 社区插件** 中启用 "MD Image Embed"
-
-### 方法 2: 从源码构建
+### Build from Source
 
 ```bash
-# 克隆仓库
 git clone https://github.com/MZSH-Tools/MDImageEmbed.git
 cd MDImageEmbed
-
-# 安装依赖
 npm install
-
-# 构建
 npm run build
-
-# 复制到 Obsidian 插件目录
-# Windows
-copy main.js "<Vault>\.obsidian\plugins\md-image-embed\main.js"
-copy manifest.json "<Vault>\.obsidian\plugins\md-image-embed\manifest.json"
-
-# macOS/Linux
-cp main.js "<Vault>/.obsidian/plugins/md-image-embed/main.js"
-cp manifest.json "<Vault>/.obsidian/plugins/md-image-embed/manifest.json"
 ```
 
-## 🚀 使用方法
+## Usage
 
-### 复制到剪贴板
+1. Right-click any `.md` file in Obsidian's file explorer
+2. Select **Copy as Base64 format**
+3. Paste the converted content anywhere you need
 
-1. 在 Obsidian 文件浏览器中右键点击任意 `.md` 文件
-2. 选择 **Copy as Base64 format**
-3. 等待转换完成（会显示提示）
-4. 粘贴到任何需要的地方
+### Settings
 
-### 另存为新文件
+Configure in **Settings → Community Plugins → MD Image Embed**:
 
-1. 在 Obsidian 文件浏览器中右键点击任意 `.md` 文件
-2. 选择 **Save as Base64 format**
-3. 自动生成新文件：`原文件名_base64.md`
+- **Show conversion log**: Display detailed conversion summary
+- **Show detailed log**: Show individual image status in notifications
+- **Convert Wiki links**: Convert `![[image.png]]` to standard Markdown
+- **Skip Base64 images**: Skip already converted Base64 images
+- **Prefix/Suffix file path**: Add custom content before/after the article (for anti-reprint protection)
 
-### 插件设置
+### Anti-reprint Protection
 
-在 **设置 → 社区插件 → MD Image Embed** 中可以配置：
+To add copyright notices or author info:
 
-- **Show conversion log**：是否显示详细转换日志
-- **File suffix**：另存为文件的后缀（默认 `_base64`）
-- **Convert Wiki links**：是否转换 Obsidian Wiki 链接 `![[image.png]]`
-- **Skip Base64 images**：是否跳过已有的 Base64 图片
+1. Create template files (e.g., `templates/prefix.md`, `templates/suffix.md`)
+2. Enter file paths in plugin settings
+3. Content will be automatically added when copying
 
-## ⚠️ 注意事项
+## Notes
 
-- **仅支持本地图片**：不支持网络图片（`http://` 或 `https://`），网络图片会被自动跳过
-- **文件大小增加**：Base64 编码会增加约 33% 的文件大小
-- **建议使用场景**：仅在需要导出/分享时使用
-- **大图片处理**：大量图片的文档建议压缩图片后再转换
+- Only local images are supported (network URLs are skipped)
+- Base64 encoding increases file size by ~33%
+- Recommended for export/sharing scenarios only
 
-## 📄 许可证
+## License
 
-本项目采用 [MIT License](LICENSE) 开源协议。
+MIT License
 
-## 📮 联系方式
+## Contact
 
-- 邮箱：mengzhishanghun@outlook.com
-
----
-
-**如果这个插件对你有帮助，请给个 ⭐️ Star 支持一下！**
+Email: mengzhishanghun@outlook.com
