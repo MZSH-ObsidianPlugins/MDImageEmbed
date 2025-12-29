@@ -25,7 +25,7 @@ MDImageEmbed is an Obsidian plugin that converts local images in Markdown files 
 ### Build from Source
 
 ```bash
-git clone https://github.com/MZSH-Tools/MDImageEmbed.git
+git clone https://github.com/MZSH-ObsidianPlugins/MDImageEmbed.git
 cd MDImageEmbed
 npm install
 npm run build
