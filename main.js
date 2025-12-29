@@ -63,7 +63,7 @@ var MDImageEmbedPlugin = class extends import_obsidian.Plugin {
   // ========== 右键菜单 ==========
   addFileMenuItems(menu, file) {
     menu.addItem((item) => {
-      item.setTitle("Copy as Base64 format").setIcon("clipboard-copy").onClick(async () => {
+      item.setTitle("\u590D\u5236\u4E3A Base64 \u683C\u5F0F").setIcon("clipboard-copy").onClick(async () => {
         await this.copyAsBase64(file);
       });
     });
@@ -111,22 +111,22 @@ var MDImageEmbedPlugin = class extends import_obsidian.Plugin {
       if (this.settings.showConversionLog) {
         this.showDetailedResults(result);
       } else {
-        new import_obsidian.Notice("\u2705 Copied as Base64 format");
+        new import_obsidian.Notice("\u2705 \u5DF2\u590D\u5236\u4E3A Base64 \u683C\u5F0F");
       }
     } catch (error) {
-      new import_obsidian.Notice("\u274C Failed to copy: " + error.message);
+      new import_obsidian.Notice("\u274C \u590D\u5236\u5931\u8D25: " + error.message);
       console.error("Copy failed:", error);
     }
   }
   // ========== 显示详细处理结果 ==========
   showDetailedResults(result) {
     const total = result.convertedCount + result.skippedCount;
-    let message = "\u2705 Copied to clipboard\n\n";
-    message += `\u{1F4CA} Summary: ${total} images
+    let message = "\u2705 \u5DF2\u590D\u5236\u5230\u526A\u8D34\u677F\n\n";
+    message += `\u{1F4CA} \u7EDF\u8BA1: ${total} \u4E2A\u56FE\u7247
 `;
-    message += `   \u2022 Converted: ${result.convertedCount}
+    message += `   \u2022 \u5DF2\u8F6C\u6362: ${result.convertedCount}
 `;
-    message += `   \u2022 Skipped: ${result.skippedCount}`;
+    message += `   \u2022 \u5DF2\u8DF3\u8FC7: ${result.skippedCount}`;
     if (this.settings.showDetailedLog) {
       message += "\n\n";
       const maxDisplay = 8;
@@ -150,12 +150,12 @@ var MDImageEmbedPlugin = class extends import_obsidian.Plugin {
       if (result.details.length > maxDisplay) {
         const remaining = result.details.length - maxDisplay;
         message += `
-... and ${remaining} more`;
+... \u8FD8\u6709 ${remaining} \u4E2A`;
       }
     }
     message += `
 
-\u{1F4A1} Console (Ctrl+Shift+I) for full details`;
+\u{1F4A1} \u63A7\u5236\u53F0 (Ctrl+Shift+I) \u67E5\u770B\u5B8C\u6574\u8BE6\u60C5`;
     new import_obsidian.Notice(message, 8e3);
   }
   // ========== 核心转换逻辑 ==========
@@ -344,32 +344,32 @@ var MDImageEmbedSettingTab = class extends import_obsidian.PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "MD Image Embed Settings" });
-    new import_obsidian.Setting(containerEl).setName("Show conversion log").setDesc("Display summary information in notifications").addToggle((toggle) => toggle.setValue(this.plugin.settings.showConversionLog).onChange(async (value) => {
+    containerEl.createEl("h2", { text: "MD Image Embed \u8BBE\u7F6E" });
+    new import_obsidian.Setting(containerEl).setName("\u663E\u793A\u8F6C\u6362\u65E5\u5FD7").setDesc("\u5728\u901A\u77E5\u4E2D\u663E\u793A\u8F6C\u6362\u6458\u8981\u4FE1\u606F").addToggle((toggle) => toggle.setValue(this.plugin.settings.showConversionLog).onChange(async (value) => {
       this.plugin.settings.showConversionLog = value;
       await this.plugin.saveSettings();
       this.display();
     }));
     if (this.plugin.settings.showConversionLog) {
-      new import_obsidian.Setting(containerEl).setName("Show detailed log").setDesc('Show individual image status in notifications (requires "Show conversion log")').addToggle((toggle) => toggle.setValue(this.plugin.settings.showDetailedLog).onChange(async (value) => {
+      new import_obsidian.Setting(containerEl).setName("\u663E\u793A\u8BE6\u7EC6\u65E5\u5FD7").setDesc('\u5728\u901A\u77E5\u4E2D\u663E\u793A\u6BCF\u4E2A\u56FE\u7247\u7684\u72B6\u6001\uFF08\u9700\u8981\u542F\u7528"\u663E\u793A\u8F6C\u6362\u65E5\u5FD7"\uFF09').addToggle((toggle) => toggle.setValue(this.plugin.settings.showDetailedLog).onChange(async (value) => {
         this.plugin.settings.showDetailedLog = value;
         await this.plugin.saveSettings();
       }));
     }
-    new import_obsidian.Setting(containerEl).setName("Convert Wiki links").setDesc("Convert Obsidian Wiki links (![[image.png]]) to standard Markdown with Base64").addToggle((toggle) => toggle.setValue(this.plugin.settings.convertWikiLinks).onChange(async (value) => {
+    new import_obsidian.Setting(containerEl).setName("\u8F6C\u6362 Wiki \u94FE\u63A5").setDesc("\u5C06 Obsidian Wiki \u94FE\u63A5 (![[image.png]]) \u8F6C\u6362\u4E3A\u6807\u51C6 Markdown Base64 \u683C\u5F0F").addToggle((toggle) => toggle.setValue(this.plugin.settings.convertWikiLinks).onChange(async (value) => {
       this.plugin.settings.convertWikiLinks = value;
       await this.plugin.saveSettings();
     }));
-    new import_obsidian.Setting(containerEl).setName("Skip Base64 images").setDesc("Skip images that are already in Base64 format").addToggle((toggle) => toggle.setValue(this.plugin.settings.skipBase64Images).onChange(async (value) => {
+    new import_obsidian.Setting(containerEl).setName("\u8DF3\u8FC7 Base64 \u56FE\u7247").setDesc("\u8DF3\u8FC7\u5DF2\u7ECF\u662F Base64 \u683C\u5F0F\u7684\u56FE\u7247").addToggle((toggle) => toggle.setValue(this.plugin.settings.skipBase64Images).onChange(async (value) => {
       this.plugin.settings.skipBase64Images = value;
       await this.plugin.saveSettings();
     }));
-    containerEl.createEl("h3", { text: "Anti-reprint Protection" });
-    new import_obsidian.Setting(containerEl).setName("Prefix file path").setDesc('Path to markdown file to prepend (e.g., "templates/prefix.md"). Leave empty to disable.').addText((text) => text.setPlaceholder("templates/prefix.md").setValue(this.plugin.settings.prefixFilePath).onChange(async (value) => {
+    containerEl.createEl("h3", { text: "\u9632\u8F6C\u8F7D\u4FDD\u62A4" });
+    new import_obsidian.Setting(containerEl).setName("\u524D\u7F00\u6587\u4EF6\u8DEF\u5F84").setDesc('\u6DFB\u52A0\u5230\u6587\u7AE0\u5F00\u5934\u7684 Markdown \u6587\u4EF6\u8DEF\u5F84\uFF08\u5982 "templates/prefix.md"\uFF09\uFF0C\u7559\u7A7A\u7981\u7528').addText((text) => text.setPlaceholder("templates/prefix.md").setValue(this.plugin.settings.prefixFilePath).onChange(async (value) => {
       this.plugin.settings.prefixFilePath = value.trim();
       await this.plugin.saveSettings();
     }));
-    new import_obsidian.Setting(containerEl).setName("Suffix file path").setDesc('Path to markdown file to append (e.g., "templates/suffix.md"). Leave empty to disable.').addText((text) => text.setPlaceholder("templates/suffix.md").setValue(this.plugin.settings.suffixFilePath).onChange(async (value) => {
+    new import_obsidian.Setting(containerEl).setName("\u540E\u7F00\u6587\u4EF6\u8DEF\u5F84").setDesc('\u6DFB\u52A0\u5230\u6587\u7AE0\u7ED3\u5C3E\u7684 Markdown \u6587\u4EF6\u8DEF\u5F84\uFF08\u5982 "templates/suffix.md"\uFF09\uFF0C\u7559\u7A7A\u7981\u7528').addText((text) => text.setPlaceholder("templates/suffix.md").setValue(this.plugin.settings.suffixFilePath).onChange(async (value) => {
       this.plugin.settings.suffixFilePath = value.trim();
       await this.plugin.saveSettings();
     }));

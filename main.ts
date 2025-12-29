@@ -67,7 +67,7 @@ export default class MDImageEmbedPlugin extends Plugin {
 		// 菜单项: 复制为 Base64 格式到剪贴板
 		menu.addItem((item) => {
 			item
-				.setTitle('Copy as Base64 format')
+				.setTitle('复制为 Base64 格式')
 				.setIcon('clipboard-copy')
 				.onClick(async () => {
 					await this.copyAsBase64(file);
@@ -130,10 +130,10 @@ export default class MDImageEmbedPlugin extends Plugin {
 				// 显示详细的处理结果
 				this.showDetailedResults(result);
 			} else {
-				new Notice('✅ Copied as Base64 format');
+				new Notice('✅ 已复制为 Base64 格式');
 			}
 		} catch (error) {
-			new Notice('❌ Failed to copy: ' + error.message);
+			new Notice('❌ 复制失败: ' + error.message);
 			console.error('Copy failed:', error);
 		}
 	}
@@ -143,11 +143,11 @@ export default class MDImageEmbedPlugin extends Plugin {
 		const total = result.convertedCount + result.skippedCount;
 
 		// 主通知
-		let message = '✅ Copied to clipboard\n\n';
+		let message = '✅ 已复制到剪贴板\n\n';
 
-		message += `📊 Summary: ${total} images\n`;
-		message += `   • Converted: ${result.convertedCount}\n`;
-		message += `   • Skipped: ${result.skippedCount}`;
+		message += `📊 统计: ${total} 个图片\n`;
+		message += `   • 已转换: ${result.convertedCount}\n`;
+		message += `   • 已跳过: ${result.skippedCount}`;
 
 		// 如果启用了详细日志，显示每个图片的状态
 		if (this.settings.showDetailedLog) {
@@ -173,12 +173,12 @@ export default class MDImageEmbedPlugin extends Plugin {
 			// 如果还有更多图片未显示
 			if (result.details.length > maxDisplay) {
 				const remaining = result.details.length - maxDisplay;
-				message += `\n... and ${remaining} more`;
+				message += `\n... 还有 ${remaining} 个`;
 			}
 		}
 
 		// 显示控制台提示
-		message += `\n\n💡 Console (Ctrl+Shift+I) for full details`;
+		message += `\n\n💡 控制台 (Ctrl+Shift+I) 查看完整详情`;
 
 		// 显示时间更长的通知（8秒）
 		new Notice(message, 8000);
@@ -423,12 +423,12 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'MD Image Embed Settings' });
+		containerEl.createEl('h2', { text: 'MD Image Embed 设置' });
 
 		// 设置 1: 显示转换日志
 		new Setting(containerEl)
-			.setName('Show conversion log')
-			.setDesc('Display summary information in notifications')
+			.setName('显示转换日志')
+			.setDesc('在通知中显示转换摘要信息')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.showConversionLog)
 				.onChange(async (value) => {
@@ -441,8 +441,8 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 		// 设置 1.5: 显示详细日志（依赖于 showConversionLog）
 		if (this.plugin.settings.showConversionLog) {
 			new Setting(containerEl)
-				.setName('Show detailed log')
-				.setDesc('Show individual image status in notifications (requires "Show conversion log")')
+				.setName('显示详细日志')
+				.setDesc('在通知中显示每个图片的状态（需要启用"显示转换日志"）')
 				.addToggle(toggle => toggle
 					.setValue(this.plugin.settings.showDetailedLog)
 					.onChange(async (value) => {
@@ -453,8 +453,8 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 
 		// 设置 2: 转换 Wiki 链接
 		new Setting(containerEl)
-			.setName('Convert Wiki links')
-			.setDesc('Convert Obsidian Wiki links (![[image.png]]) to standard Markdown with Base64')
+			.setName('转换 Wiki 链接')
+			.setDesc('将 Obsidian Wiki 链接 (![[image.png]]) 转换为标准 Markdown Base64 格式')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.convertWikiLinks)
 				.onChange(async (value) => {
@@ -464,8 +464,8 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 
 		// 设置 3: 跳过 Base64 图片
 		new Setting(containerEl)
-			.setName('Skip Base64 images')
-			.setDesc('Skip images that are already in Base64 format')
+			.setName('跳过 Base64 图片')
+			.setDesc('跳过已经是 Base64 格式的图片')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.skipBase64Images)
 				.onChange(async (value) => {
@@ -474,12 +474,12 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 				}));
 
 		// 分隔线
-		containerEl.createEl('h3', { text: 'Anti-reprint Protection' });
+		containerEl.createEl('h3', { text: '防转载保护' });
 
 		// 设置 4: 前缀文件路径
 		new Setting(containerEl)
-			.setName('Prefix file path')
-			.setDesc('Path to markdown file to prepend (e.g., "templates/prefix.md"). Leave empty to disable.')
+			.setName('前缀文件路径')
+			.setDesc('添加到文章开头的 Markdown 文件路径（如 "templates/prefix.md"），留空禁用')
 			.addText(text => text
 				.setPlaceholder('templates/prefix.md')
 				.setValue(this.plugin.settings.prefixFilePath)
@@ -490,8 +490,8 @@ class MDImageEmbedSettingTab extends PluginSettingTab {
 
 		// 设置 5: 后缀文件路径
 		new Setting(containerEl)
-			.setName('Suffix file path')
-			.setDesc('Path to markdown file to append (e.g., "templates/suffix.md"). Leave empty to disable.')
+			.setName('后缀文件路径')
+			.setDesc('添加到文章结尾的 Markdown 文件路径（如 "templates/suffix.md"），留空禁用')
 			.addText(text => text
 				.setPlaceholder('templates/suffix.md')
 				.setValue(this.plugin.settings.suffixFilePath)
